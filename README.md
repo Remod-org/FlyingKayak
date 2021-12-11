@@ -11,9 +11,14 @@
 
 * /fk  -- Spawn a flying kayak
 * /fkd -- Despawn a flying kayak (must be within 10 meters of the kayak)
+          For admins, they can destroy kayaks for all or specific players by name:
+		  /fkd all
+		  /fkd Bubba
 * /fkc -- List the current number of kayaks (Only useful if limit set higher than 1 per user)
 * /fkhelp -- List the available commands (above)
 
+* /fkg PLAYER -- For admins - Give player a Flying Kayak
+* fkgive PLAYER -- Console command for fsg
 ## Configuration
 Configuration is done via the FlyingKayak.json file under the oxide/config directory.  Following is the default:
 ```json
