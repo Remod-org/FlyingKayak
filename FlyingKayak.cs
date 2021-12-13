@@ -33,7 +33,7 @@ using Oxide.Core.Plugins;
 
 namespace Oxide.Plugins
 {
-    [Info("FlyingKayak", "RFC1920", "1.0.1")]
+    [Info("FlyingKayak", "RFC1920", "1.0.2")]
     [Description("Flying kayak, because sometimes these things are necessary.")]
     internal class FlyingKayak : RustPlugin
     {
