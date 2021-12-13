@@ -388,12 +388,9 @@ namespace Oxide.Plugins
         private void AddKayak(BasePlayer player, Vector3 location)
         {
             if (player == null && location == default(Vector3)) return;
-            Vector3 spawnpos = player.transform.position + (-player.transform.forward * 4f) + new Vector3(0, 1f, 0);
+            Vector3 spawnpos = player.transform.position + (player.transform.forward * 4f) + new Vector3(0, 1f, 0);
 
-            //const string staticprefab = "assets/bundled/prefabs/static/chair.invisible.static.prefab";
-            //const string staticprefab = "assets/bundled/prefabs/static/chair.static.prefab";
-            const string staticprefab = "assets/content/vehicles/boats/kayak/kayak.prefab";
-            BaseEntity newKayak = GameManager.server.CreateEntity(staticprefab, spawnpos, new Quaternion(), true);
+            BaseEntity newKayak = GameManager.server.CreateEntity("assets/content/vehicles/boats/kayak/kayak.prefab", spawnpos, new Quaternion(), true);
             newKayak.name = "FlyingKayak";
             BaseMountable chairmount = newKayak.GetComponent<BaseMountable>();
             chairmount.isMobile = true;
@@ -451,7 +448,7 @@ namespace Oxide.Plugins
         private void DestroyAllKayaks(BasePlayer player)
         {
             List<BaseEntity> kayaklist = new List<BaseEntity>();
-            Vis.Entities(new Vector3(0,0,0), 3500f, kayaklist);
+            Vis.Entities(Vector3.zero, 3500f, kayaklist);
             bool foundkayak = false;
 
             foreach (BaseEntity p in kayaklist)
@@ -474,7 +471,7 @@ namespace Oxide.Plugins
         {
             if (player == null) return;
             List<BaseEntity> kayaklist = new List<BaseEntity>();
-            Vis.Entities(new Vector3(0,0,0), 3500f, kayaklist);
+            Vis.Entities(Vector3.zero, 3500f, kayaklist);
             bool foundkayak = false;
 
             foreach (BaseEntity p in kayaklist)
@@ -498,9 +495,6 @@ namespace Oxide.Plugins
         {
             if (player == null || input == null) return;
             if (!player.isMounted) return;
-
-            //if (input.current.buttons > 1 && configData.debugMovement)
-            //    Puts($"OnPlayerInput: {input.current.buttons}");
 
             KayakEntity activekayak = player.GetMountedVehicle()?.GetComponentInParent<KayakEntity>();
             if (activekayak == null) return;
