@@ -21,19 +21,19 @@
 */
 #endregion License Information (GPL v3)
 using Oxide.Core;
+using Oxide.Core.Libraries.Covalence;
+using Oxide.Core.Plugins;
+using Rust;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using Rust;
-using System.Linq;
-using Oxide.Core.Libraries.Covalence;
 using System.Globalization;
-using Oxide.Core.Plugins;
+using System.Linq;
+using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("FlyingKayak", "RFC1920", "1.0.2")]
+    [Info("FlyingKayak", "RFC1920", "1.0.3")]
     [Description("Flying kayak, because sometimes these things are necessary.")]
     internal class FlyingKayak : RustPlugin
     {
@@ -42,12 +42,12 @@ namespace Oxide.Plugins
         private static LayerMask layerMask;
         private static LayerMask buildingMask;
 
-        private static Dictionary<ulong, PlayerKayakData> loadplayer = new Dictionary<ulong, PlayerKayakData>();
-        private static List<ulong> pilotslist = new List<ulong>();
+        private static Dictionary<ulong, PlayerKayakData> loadplayer = new();
+        private static List<ulong> pilotslist = new();
 
-        public List<string> monNames = new List<string>();
-        public SortedDictionary<string, Vector3> monPos  = new SortedDictionary<string, Vector3>();
-        public SortedDictionary<string, Vector3> monSize = new SortedDictionary<string, Vector3>();
+        public List<string> monNames = new();
+        public SortedDictionary<string, Vector3> monPos = new();
+        public SortedDictionary<string, Vector3> monSize = new();
 
         public static FlyingKayak Instance;
 
@@ -128,7 +128,7 @@ namespace Oxide.Plugins
 
         private static HashSet<BasePlayer> FindPlayers(string nameOrIdOrIp)
         {
-            HashSet<BasePlayer> players = new HashSet<BasePlayer>();
+            HashSet<BasePlayer> players = new();
             if (string.IsNullOrEmpty(nameOrIdOrIp)) return players;
             foreach (BasePlayer activePlayer in BasePlayer.activePlayerList)
             {
@@ -164,7 +164,7 @@ namespace Oxide.Plugins
         protected override void LoadDefaultConfig()
         {
             Puts("Creating new config file.");
-            ConfigData config = new ConfigData
+            ConfigData config = new()
             {
                 UseMaxKayakChecks = true,
                 debug = false,
@@ -382,7 +382,7 @@ namespace Oxide.Plugins
         private void DoLog(string message, bool ismovement = false)
         {
             if (ismovement && !configData.debugMovement) return;
-            if (configData.debugMovement || configData.debug) Interface.Oxide.LogInfo(message);
+            if (configData.debugMovement || configData.debug) Interface.GetMod().LogInfo(message);
         }
 
         private void AddKayak(BasePlayer player, Vector3 location)
@@ -424,7 +424,7 @@ namespace Oxide.Plugins
         private void DestroyLocalKayak(BasePlayer player)
         {
             if (player == null) return;
-            List<BaseEntity> kayaklist = new List<BaseEntity>();
+            List<BaseEntity> kayaklist = new();
             Vis.Entities(player.transform.position, configData.MinDistance, kayaklist);
             bool foundkayak = false;
 
@@ -447,7 +447,7 @@ namespace Oxide.Plugins
 
         private void DestroyAllKayaks(BasePlayer player)
         {
-            List<BaseEntity> kayaklist = new List<BaseEntity>();
+            List<BaseEntity> kayaklist = new();
             Vis.Entities(Vector3.zero, 3500f, kayaklist);
             bool foundkayak = false;
 
@@ -470,7 +470,7 @@ namespace Oxide.Plugins
         private void DestroyRemoteKayak(BasePlayer player)
         {
             if (player == null) return;
-            List<BaseEntity> kayaklist = new List<BaseEntity>();
+            List<BaseEntity> kayaklist = new();
             Vis.Entities(Vector3.zero, 3500f, kayaklist);
             bool foundkayak = false;
 
@@ -519,7 +519,7 @@ namespace Oxide.Plugins
             return null;
         }
 
-        private bool KayakLimitReached(BasePlayer player, bool vip=false)
+        private bool KayakLimitReached(BasePlayer player, bool vip = false)
         {
             if (configData.UseMaxKayakChecks)
             {
@@ -601,7 +601,7 @@ namespace Oxide.Plugins
             {
                 myparent = myent.GetParentEntity().name;
             }
-            catch {}
+            catch { }
 
             if (myparent == "FlyingKayak" || myent.name == "FlyingKayak")
             {
@@ -664,13 +664,9 @@ namespace Oxide.Plugins
 
         private void DestroyAll<T>()
         {
-            UnityEngine.Object[] objects = UnityEngine.Object.FindObjectsOfType(typeof(T));
-            if (objects != null)
+            foreach (UnityEngine.Object gameObj in UnityEngine.Object.FindObjectsByType(typeof(T), FindObjectsSortMode.None))
             {
-                foreach (UnityEngine.Object gameObj in objects)
-                {
-                    UnityEngine.Object.Destroy(gameObj);
-                }
+                UnityEngine.Object.Destroy(gameObj);
             }
         }
 
@@ -681,7 +677,7 @@ namespace Oxide.Plugins
         #endregion
 
         #region Kayak Antihack check
-        private static List<BasePlayer> kayakantihack = new List<BasePlayer>();
+        private static List<BasePlayer> kayakantihack = new();
 
         private object OnPlayerViolation(BasePlayer player, AntiHackType type, float amount)
         {
